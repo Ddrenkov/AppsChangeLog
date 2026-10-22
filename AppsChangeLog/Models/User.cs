@@ -6,10 +6,10 @@ namespace AppsChangeLog.Models
     public class User : IdentityUser
     {
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public string FullName { get; set; } = string.Empty;
 
-        public int? VendorId { get; set; }
+        public int? VendorID { get; set; }
 
         public Vendor? Vendor { get; set; }
     }

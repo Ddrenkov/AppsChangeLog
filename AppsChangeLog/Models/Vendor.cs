@@ -11,7 +11,6 @@ namespace AppsChangeLog.Models
         public string Name { get; set; } = string.Empty;
 
         [EmailAddress]
-        [MaxLength(254)]
         public string? ContactEmail { get; set; }
 
         public ICollection<Application> Applications { get; set; }
