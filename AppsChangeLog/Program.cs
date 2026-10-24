@@ -7,7 +7,7 @@ namespace AppsChangeLog
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -24,22 +24,72 @@ namespace AppsChangeLog
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            var app = builder.Build();
-
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            var app = builder.Build();
 
+            if (app.Environment.IsDevelopment())
+            {
+                using var scope = app.Services.CreateScope();
+
+                var userManager = scope.ServiceProvider
+                    .GetRequiredService<UserManager<User>>();
+
+                var roleManager = scope.ServiceProvider
+                    .GetRequiredService<RoleManager<IdentityRole>>();
+
+                if (!await roleManager.RoleExistsAsync("Admin"))
+                {
+                    var result = await roleManager.CreateAsync(
+                        new IdentityRole("Admin"));
+
+                    if (!result.Succeeded)
+                    {
+                        throw new InvalidOperationException(
+                            string.Join("; ", result.Errors.Select(e => e.Description)));
+                    }
+                }
+
+                var root = await userManager.FindByNameAsync("root");
+
+                if (root == null)
+                {
+                    root = new User
+                    {
+                        UserName = "root",
+                        Email = "root@example.com",
+                        FullName = "Root Administrator",
+                        EmailConfirmed = true
+                    };
+
+                    // Hash this development password without changing other users' rules.
+                    root.PasswordHash =
+                        userManager.PasswordHasher.HashPassword(root, "root");
+
+                    var result = await userManager.CreateAsync(root);
+
+                    if (!result.Succeeded)
+                    {
+                        throw new InvalidOperationException(
+                            string.Join("; ", result.Errors.Select(e => e.Description)));
+                    }
+                }
+
+                if (!await userManager.IsInRoleAsync(root, "Admin"))
+                {
+                    var result = await userManager.AddToRoleAsync(root, "Admin");
+
+                    if (!result.Succeeded)
+                    {
+                        throw new InvalidOperationException(
+                            string.Join("; ", result.Errors.Select(e => e.Description)));
+                    }
+                }
+            }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

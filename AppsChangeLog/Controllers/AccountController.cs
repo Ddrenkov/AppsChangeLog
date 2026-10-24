@@ -48,7 +48,8 @@ namespace AppsChangeLog.Controllers
                 return View();
             }
 
-            var user = await userManager.FindByEmailAsync(email.Trim());
+            var user = await userManager.FindByNameAsync(email.Trim())
+                ?? await userManager.FindByEmailAsync(email.Trim());
 
             if (user != null)
             {
