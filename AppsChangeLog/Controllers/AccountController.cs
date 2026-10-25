@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AppUser = AppsChangeLog.Models.User;
@@ -43,38 +43,37 @@ namespace AppsChangeLog.Controllers
             {
                 ModelState.AddModelError(
                     string.Empty,
-                    "Enter your email and password.");
+                    "Enter your username or email and your password.");
 
                 return View();
             }
 
-            var user = await userManager.FindByNameAsync(email.Trim())
-                ?? await userManager.FindByEmailAsync(email.Trim());
+            var login = email.Trim();
 
-            if (user != null)
+            var user = await userManager.FindByNameAsync(login)
+                ?? await userManager.FindByEmailAsync(login);
+
+            if (user == null)
             {
-                var result = await signInManager.PasswordSignInAsync(
-                    user,
-                    password,
-                    rememberMe,
-                    lockoutOnFailure: true);
-
-                if (result.Succeeded)
-                {
-                    if (Url.IsLocalUrl(returnUrl))
-                    {
-                        return LocalRedirect(returnUrl!);
-                    }
-
-                    return RedirectToAction("Index", "Home");
-                }
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View();
             }
 
-            ModelState.AddModelError(
-                string.Empty,
-                "Invalid login attempt.");
+            var result = await signInManager.PasswordSignInAsync(
+                user, password, rememberMe, lockoutOnFailure: true);
 
-            return View();
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View();
+            }
+
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl!);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]

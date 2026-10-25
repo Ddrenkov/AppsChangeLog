@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using AppsChangeLog.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -103,11 +103,7 @@ namespace AppsChangeLog.Controllers
 
             if (!createResult.Succeeded)
             {
-                foreach (var error in createResult.Errors)
-                {
-                    ModelState.AddModelError(
-                        string.Empty, error.Description);
-                }
+                AddIdentityErrors(createResult);
 
                 await LoadVendorsAsync(vendorId);
                 return View();
@@ -118,11 +114,7 @@ namespace AppsChangeLog.Controllers
 
             if (!roleResult.Succeeded)
             {
-                foreach (var error in roleResult.Errors)
-                {
-                    ModelState.AddModelError(
-                        string.Empty, error.Description);
-                }
+                AddIdentityErrors(roleResult);
 
                 await LoadVendorsAsync(vendorId);
                 return View();
@@ -146,7 +138,7 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
-            if (await CannotDeleteAsync(user))
+            if (await IsProtectedAccountAsync(user))
             {
                 return Forbid();
             }
@@ -166,7 +158,7 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
-            if (await CannotDeleteAsync(user))
+            if (await IsProtectedAccountAsync(user))
             {
                 return Forbid();
             }
@@ -175,11 +167,7 @@ namespace AppsChangeLog.Controllers
 
             if (!result.Succeeded)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(
-                        string.Empty, error.Description);
-                }
+                AddIdentityErrors(result);
 
                 return View("Delete", user);
             }
@@ -187,7 +175,15 @@ namespace AppsChangeLog.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> CannotDeleteAsync(AppUser user)
+        private void AddIdentityErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private async Task<bool> IsProtectedAccountAsync(AppUser user)
         {
             return user.Id == userManager.GetUserId(User)
                 || await userManager.IsInRoleAsync(user, "Admin");

@@ -1,5 +1,4 @@
 using AppsChangeLog.Data;
-using AppsChangeLog.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -187,11 +186,6 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
-            if (!await CanAccessApplicationAsync(application.VendorId))
-            {
-                return Forbid();
-            }
-
             return View(application);
         }
 
@@ -206,11 +200,6 @@ namespace AppsChangeLog.Controllers
             if (application == null)
             {
                 return NotFound();
-            }
-
-            if (!await CanAccessApplicationAsync(application.VendorId))
-            {
-                return Forbid();
             }
 
             context.Applications.Remove(application);
@@ -241,7 +230,9 @@ namespace AppsChangeLog.Controllers
             {
                 var user = await userManager.GetUserAsync(User);
 
-                query = query.Where(v => v.Id == user!.VendorID);
+                var vendorId = user?.VendorID;
+
+                query = query.Where(v => v.Id == vendorId);
             }
 
             var vendors = await query

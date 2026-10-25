@@ -12,10 +12,11 @@ namespace AppsChangeLog.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext context;
-
         private readonly UserManager<User> userManager;
 
-        public HomeController(ApplicationDbContext context, UserManager<User> userManager)
+        public HomeController(
+            ApplicationDbContext context,
+            UserManager<User> userManager)
         {
             this.context = context;
             this.userManager = userManager;
