@@ -3,6 +3,7 @@ using AppsChangeLog.Data;
 using AppsChangeLog.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppsChangeLog.Controllers
@@ -12,15 +13,31 @@ namespace AppsChangeLog.Controllers
     {
         private readonly ApplicationDbContext context;
 
-        public HomeController(ApplicationDbContext context)
+        private readonly UserManager<User> userManager;
+
+        public HomeController(ApplicationDbContext context, UserManager<User> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
-            var applications = await context.Applications
-                .AsNoTracking()
+            var query = context.Applications.AsNoTracking();
+
+            if (!User.IsInRole("Admin"))
+            {
+                var user = await userManager.GetUserAsync(User);
+
+                if (!User.IsInRole("Vendor") || user?.VendorID == null)
+                {
+                    return Forbid();
+                }
+
+                query = query.Where(a => a.VendorId == user.VendorID.Value);
+            }
+
+            var applications = await query
                 .Include(a => a.Vendor)
                 .OrderBy(a => a.Name)
                 .ToListAsync();

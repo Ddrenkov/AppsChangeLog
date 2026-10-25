@@ -23,21 +23,21 @@ body {
     flex-shrink: 0;
     padding: 24px 16px;
     overflow-y: auto;
-    background: #202c3c;
-    color: #ffffff;
+    background: #dceef9;
+    color: #23445e;
 }
 
 .sidebar-title {
     margin-bottom: 32px;
     padding: 0 12px;
-    color: #ffffff;
+    color: #23445e;
     font-size: 1.25rem;
     font-weight: 600;
     text-decoration: none;
 }
 
     .sidebar-title:hover {
-        color: #ffffff;
+        color: #23445e;
     }
 
 .sidebar-navigation {
@@ -48,28 +48,28 @@ body {
 
 .sidebar-heading {
     margin: 22px 12px 6px;
-    color: #b5c2d3;
+    color: #48657b;
     font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    font-weight: 600;
+    letter-spacing: normal;
 }
 
 .sidebar-link {
     padding: 11px 12px;
-    border-radius: 6px;
-    color: #e0e6ee;
+    border-radius: 3px;
+    color: #23445e;
     text-decoration: none;
 }
 
     .sidebar-link:hover,
     .sidebar-link.active {
-        background: #34465e;
-        color: #ffffff;
+        background: #bdddf1;
+        color: #23445e;
     }
 
     .sidebar-link:focus-visible,
     .logout-button:focus-visible {
-        outline: 2px solid #ffffff;
+        outline: 2px solid #285f86;
         outline-offset: 2px;
     }
 
@@ -80,7 +80,7 @@ body {
 
 .account-name {
     margin-bottom: 12px;
-    color: #b5c2d3;
+    color: #48657b;
     overflow-wrap: anywhere;
 }
 
@@ -88,7 +88,7 @@ body {
     padding: 0;
     border: 0;
     background: transparent;
-    color: #ffffff;
+    color: #23445e;
     cursor: pointer;
 }
 

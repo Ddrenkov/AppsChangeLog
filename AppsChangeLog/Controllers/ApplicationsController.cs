@@ -50,6 +50,11 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
+            if (!await CanManageAsync(application.VendorId))
+            {
+                return NotFound();
+            }
+
             return View(application);
         }
 
@@ -119,7 +124,7 @@ namespace AppsChangeLog.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Vendor")]
         public async Task<IActionResult> Edit(int id)
         {
             var application = await context.Applications
@@ -143,7 +148,7 @@ namespace AppsChangeLog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Vendor")]
         public async Task<IActionResult> Edit(
             int id,
             [Bind("Name,WhatWasChanged,CurrVersion,InstructionsForImport,ReleaseDate,VendorId")]

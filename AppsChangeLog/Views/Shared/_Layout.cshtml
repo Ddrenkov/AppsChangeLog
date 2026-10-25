@@ -1,5 +1,7 @@
+@inject Microsoft.AspNetCore.Identity.UserManager<AppsChangeLog.Models.User> UserManager
 @{
     bool loggedIn = User.Identity?.IsAuthenticated == true;
+    var currentUser = loggedIn ? await UserManager.GetUserAsync(User) : null;
     string currentController =
         ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
 }
@@ -63,7 +65,7 @@
                 </nav>
 
                 <div class="sidebar-account">
-                    <div class="account-name">@User.Identity?.Name</div>
+                    <div class="account-name">@currentUser?.FullName</div>
 
                     <form asp-controller="Account"
                           asp-action="Logout"

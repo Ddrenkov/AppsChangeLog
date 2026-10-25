@@ -1,13 +1,17 @@
-﻿@model AppsChangeLog.Models.Application
+@model AppsChangeLog.Models.Application
+@inject Microsoft.AspNetCore.Identity.UserManager<AppsChangeLog.Models.User> UserManager
 
 @{
     ViewData["Title"] = Model.Name;
+    var currentUser = await UserManager.GetUserAsync(User);
+    bool canEdit = User.IsInRole("Admin")
+        || (User.IsInRole("Vendor") && currentUser?.VendorID == Model.VendorId);
 }
 
 <div class="page-header">
     <h1>@Model.Name</h1>
 
-    @if (User.IsInRole("Admin"))
+    @if (canEdit)
     {
         <a asp-action="Edit"
            asp-route-id="@Model.Id"
