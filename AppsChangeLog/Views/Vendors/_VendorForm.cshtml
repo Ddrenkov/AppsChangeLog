@@ -1,11 +1,9 @@
-﻿@model AppsChangeLog.Models.Vendor
+@model AppsChangeLog.Models.Vendor
 
 <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
 <div class="mb-3">
-    <label asp-for="Name" class="form-label">
-        Vendor name
-    </label>
+    <label asp-for="Name" class="form-label"></label>
 
     <input asp-for="Name" class="form-control" />
 
@@ -13,9 +11,7 @@
 </div>
 
 <div class="mb-3">
-    <label asp-for="ContactEmail" class="form-label">
-        Contact email
-    </label>
+    <label asp-for="ContactEmail" class="form-label"></label>
 
     <input asp-for="ContactEmail"
            type="email"

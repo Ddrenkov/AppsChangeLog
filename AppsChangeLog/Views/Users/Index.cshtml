@@ -1,8 +1,9 @@
-﻿@model IEnumerable<AppsChangeLog.Models.User>
+@model IEnumerable<AppsChangeLog.Models.User>
 @inject Microsoft.AspNetCore.Identity.UserManager<AppsChangeLog.Models.User> UserManager
 
 @{
     ViewData["Title"] = "Manage users";
+    var currentUserId = UserManager.GetUserId(User);
 }
 
 <div class="page-header">
@@ -18,22 +19,20 @@
         <table class="table table-hover align-middle">
             <thead>
                 <tr>
-                    <th>Full name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Vendor</th>
-                    <th>Actions</th>
+                    <th scope="col">Full name</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Vendor</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
 
             <tbody>
                 @foreach (var account in Model)
                 {
-                    bool isAdmin =
-                    await UserManager.IsInRoleAsync(account, "Admin");
+                    bool isAdmin = await UserManager.IsInRoleAsync(account, "Admin");
 
-                    bool isCurrentUser =
-                    account.Id == UserManager.GetUserId(User);
+                    bool isCurrentUser = account.Id == currentUserId;
 
                     <tr>
                         <td>@account.FullName</td>

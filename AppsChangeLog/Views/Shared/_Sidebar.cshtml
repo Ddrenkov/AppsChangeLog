@@ -1,0 +1,59 @@
+@inject Microsoft.AspNetCore.Identity.UserManager<AppsChangeLog.Models.User> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    string currentController =
+        ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+}
+
+<aside class="sidebar">
+    <a class="sidebar-title"
+       asp-controller="Home"
+       asp-action="Index">
+        AppsChangeLog
+    </a>
+
+    <nav class="sidebar-navigation" aria-label="Main navigation">
+        <a class="sidebar-link @(currentController == "Home" ? "active" : "")"
+           asp-controller="Home"
+           asp-action="Index">
+            Dashboard
+        </a>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="sidebar-heading">Administration</div>
+
+            <a class="sidebar-link @(currentController == "Vendors" ? "active" : "")"
+               asp-controller="Vendors"
+               asp-action="Index">
+                Manage vendors
+            </a>
+
+            <a class="sidebar-link @(currentController == "Users" ? "active" : "")"
+               asp-controller="Users"
+               asp-action="Index">
+                Manage users
+            </a>
+
+            <a class="sidebar-link @(currentController == "Applications" ? "active" : "")"
+               asp-controller="Applications"
+               asp-action="Index">
+                Manage applications
+            </a>
+        }
+
+    </nav>
+
+    <div class="sidebar-account">
+        <div class="account-name">@currentUser?.FullName</div>
+
+        <form asp-controller="Account"
+              asp-action="Logout"
+              method="post">
+            <button type="submit" class="logout-button">
+                Log out
+            </button>
+        </form>
+    </div>
+</aside>
