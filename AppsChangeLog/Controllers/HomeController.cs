@@ -46,11 +46,6 @@ namespace AppsChangeLog.Controllers
             return View(applications);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [AllowAnonymous]
         [ResponseCache(
             Duration = 0,
