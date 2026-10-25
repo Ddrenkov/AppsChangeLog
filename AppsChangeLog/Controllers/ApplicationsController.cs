@@ -25,6 +25,7 @@ namespace AppsChangeLog.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var applications = await context.Applications
@@ -53,7 +54,7 @@ namespace AppsChangeLog.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Vendor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var user = await userManager.GetUserAsync(User);

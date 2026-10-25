@@ -1,0 +1,66 @@
+﻿@model IEnumerable<AppsChangeLog.Models.Application>
+
+@{
+    ViewData["Title"] = "Manage applications";
+}
+
+<div class="page-header">
+    <h1>Manage applications</h1>
+
+    <a asp-action="Create" class="btn btn-primary">
+        Add application
+    </a>
+</div>
+
+<div class="content-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Application</th>
+                    <th>Version</th>
+                    <th>Vendor</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var application in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details"
+                               asp-route-id="@application.Id">
+                                @application.Name
+                            </a>
+                        </td>
+                        <td>@application.CurrVersion</td>
+                        <td>@application.Vendor.Name</td>
+                        <td>
+                            <a asp-action="Edit"
+                               asp-route-id="@application.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@application.Id"
+                               class="btn btn-sm btn-outline-danger">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            No applications have been added.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

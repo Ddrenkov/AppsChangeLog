@@ -1,0 +1,47 @@
+﻿@model AppsChangeLog.Models.Application
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="page-header">
+    <h1>@Model.Name</h1>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
+            Edit application
+        </a>
+    }
+</div>
+
+<div class="content-panel">
+    <dl class="row">
+        <dt class="col-sm-3">Current version</dt>
+        <dd class="col-sm-9">@Model.CurrVersion</dd>
+
+        <dt class="col-sm-3">Vendor</dt>
+        <dd class="col-sm-9">@Model.Vendor.Name</dd>
+
+        <dt class="col-sm-3">Release date</dt>
+        <dd class="col-sm-9">
+            @Model.ReleaseDate.ToString("dd MMM yyyy")
+        </dd>
+    </dl>
+
+    <h2 class="h5 mt-4">What was changed</h2>
+    <div class="release-text">@Model.WhatWasChanged</div>
+
+    <hr class="my-4" />
+
+    <h2 class="h5">Import instructions</h2>
+    <div class="release-text">@Model.InstructionsForImport</div>
+</div>
+
+<a asp-controller="Home"
+   asp-action="Index"
+   class="btn btn-outline-secondary mt-3">
+    Back to dashboard
+</a>

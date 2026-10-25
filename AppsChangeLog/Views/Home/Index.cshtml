@@ -1,8 +1,54 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<AppsChangeLog.Models.Application>
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="page-header">
+    <h1>Dashboard</h1>
+    <span class="text-muted">@Model.Count() applications</span>
+</div>
+
+<div class="content-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Application</th>
+                    <th>Current version</th>
+                    <th>Vendor</th>
+                    <th>Release date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var application in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Applications"
+                               asp-action="Details"
+                               asp-route-id="@application.Id">
+                                @application.Name
+                            </a>
+                        </td>
+                        <td>@application.CurrVersion</td>
+                        <td>@application.Vendor.Name</td>
+                        <td>
+                            @application.ReleaseDate.ToString("dd MMM yyyy")
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            No applications have been added.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

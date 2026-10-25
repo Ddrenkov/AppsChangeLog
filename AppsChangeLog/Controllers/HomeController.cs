@@ -1,23 +1,31 @@
 using System.Diagnostics;
+using AppsChangeLog.Data;
 using AppsChangeLog.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppsChangeLog.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            this.context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var applications = await context.Applications
+                .AsNoTracking()
+                .Include(a => a.Vendor)
+                .OrderBy(a => a.Name)
+                .ToListAsync();
+
+            return View(applications);
         }
 
         public IActionResult Privacy()
