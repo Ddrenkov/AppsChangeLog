@@ -1,0 +1,52 @@
+﻿@model AppsChangeLog.Models.Vendor
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="page-header">
+    <h1>@Model.Name</h1>
+
+    <a asp-action="Edit"
+       asp-route-id="@Model.Id"
+       class="btn btn-primary">
+        Edit vendor
+    </a>
+</div>
+
+<div class="content-panel">
+    <p>
+        <strong>Contact email:</strong>
+        @(Model.ContactEmail ?? "Not provided")
+    </p>
+
+    <h2 class="h5 mt-4">Applications</h2>
+
+    <ul class="list-group">
+        @foreach (var application in Model.Applications.OrderBy(a => a.Name))
+        {
+            <li class="list-group-item">
+                <a asp-controller="Applications"
+                   asp-action="Details"
+                   asp-route-id="@application.Id">
+                    @application.Name
+                </a>
+
+                <span class="text-muted">
+                    — @application.CurrVersion
+                </span>
+            </li>
+        }
+
+        @if (!Model.Applications.Any())
+        {
+            <li class="list-group-item text-muted">
+                This vendor has no applications.
+            </li>
+        }
+    </ul>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">
+    Back to vendors
+</a>

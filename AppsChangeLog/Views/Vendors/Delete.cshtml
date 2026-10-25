@@ -1,0 +1,36 @@
+﻿@model AppsChangeLog.Models.Vendor
+
+@{
+    ViewData["Title"] = "Delete vendor";
+}
+
+<div class="page-header">
+    <h1>Delete vendor</h1>
+</div>
+
+<div class="content-panel">
+    <div asp-validation-summary="All"
+         class="text-danger mb-3"></div>
+
+    <p>
+        Are you sure you want to delete
+        <strong>@Model.Name</strong>?
+    </p>
+
+    <p class="text-muted">
+        Vendors with applications or user accounts cannot be deleted.
+    </p>
+
+    <form asp-action="Delete"
+          asp-route-id="@Model.Id"
+          method="post">
+
+        <button type="submit" class="btn btn-danger">
+            Delete
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Cancel
+        </a>
+    </form>
+</div>

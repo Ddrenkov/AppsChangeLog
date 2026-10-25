@@ -1,0 +1,75 @@
+﻿@model AppsChangeLog.Models.Application
+
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label">
+        Application name
+    </label>
+
+    <input asp-for="Name" class="form-control" />
+
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="CurrVersion" class="form-label">
+        Current version
+    </label>
+
+    <input asp-for="CurrVersion" class="form-control" />
+
+    <span asp-validation-for="CurrVersion" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="VendorId" class="form-label">
+        Vendor
+    </label>
+
+    <select asp-for="VendorId"
+            asp-items="ViewBag.Vendors"
+            class="form-select">
+        <option value="">Select a vendor</option>
+    </select>
+
+    <span asp-validation-for="VendorId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="ReleaseDate" class="form-label">
+        Release date
+    </label>
+
+    <input asp-for="ReleaseDate"
+           type="date"
+           class="form-control" />
+
+    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="WhatWasChanged" class="form-label">
+        What was changed
+    </label>
+
+    <textarea asp-for="WhatWasChanged"
+              rows="6"
+              class="form-control"></textarea>
+
+    <span asp-validation-for="WhatWasChanged"
+          class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="InstructionsForImport" class="form-label">
+        Import instructions
+    </label>
+
+    <textarea asp-for="InstructionsForImport"
+              rows="8"
+              class="form-control"></textarea>
+
+    <span asp-validation-for="InstructionsForImport"
+          class="text-danger"></span>
+</div>

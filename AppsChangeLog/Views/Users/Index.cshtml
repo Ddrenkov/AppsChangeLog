@@ -1,0 +1,74 @@
+﻿@model IEnumerable<AppsChangeLog.Models.User>
+@inject Microsoft.AspNetCore.Identity.UserManager<AppsChangeLog.Models.User> UserManager
+
+@{
+    ViewData["Title"] = "Manage users";
+}
+
+<div class="page-header">
+    <h1>Manage users</h1>
+
+    <a asp-action="Create" class="btn btn-primary">
+        Add user
+    </a>
+</div>
+
+<div class="content-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Full name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Vendor</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var account in Model)
+                {
+                    bool isAdmin =
+                    await UserManager.IsInRoleAsync(account, "Admin");
+
+                    bool isCurrentUser =
+                    account.Id == UserManager.GetUserId(User);
+
+                    <tr>
+                        <td>@account.FullName</td>
+                        <td>@account.UserName</td>
+                        <td>@account.Email</td>
+                        <td>@(account.Vendor?.Name ?? "Not assigned")</td>
+
+                        <td>
+                            @if (!isAdmin && !isCurrentUser)
+                            {
+                                <a asp-action="Delete"
+                                   asp-route-id="@account.Id"
+                                   class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">
+                                    Protected account
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No users found.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
