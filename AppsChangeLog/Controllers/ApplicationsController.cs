@@ -50,7 +50,7 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
-            if (!await CanManageAsync(application.VendorId))
+            if (!await CanAccessApplicationAsync(application.VendorId))
             {
                 return NotFound();
             }
@@ -62,19 +62,7 @@ namespace AppsChangeLog.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            var user = await userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return Challenge();
-            }
-
-            if (!User.IsInRole("Admin") && user.VendorID == null)
-            {
-                return Forbid();
-            }
-
-            await LoadVendorsAsync(user.VendorID);
+            await LoadVendorsAsync();
 
             return View(new AppEntity
             {
@@ -89,23 +77,6 @@ namespace AppsChangeLog.Controllers
             [Bind("Name,WhatWasChanged,CurrVersion,InstructionsForImport,ReleaseDate,VendorId")]
             AppEntity application)
         {
-            var user = await userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return Challenge();
-            }
-
-            if (!User.IsInRole("Admin"))
-            {
-                if (user.VendorID == null)
-                {
-                    return Forbid();
-                }
-
-                application.VendorId = user.VendorID.Value;
-            }
-
             await ValidateApplicationAsync(application);
 
             if (!ModelState.IsValid)
@@ -113,6 +84,11 @@ namespace AppsChangeLog.Controllers
                 await LoadVendorsAsync(application.VendorId);
                 return View(application);
             }
+
+            application.Name = application.Name.Trim();
+            application.WhatWasChanged = application.WhatWasChanged.Trim();
+            application.CurrVersion = application.CurrVersion.Trim();
+            application.InstructionsForImport = application.InstructionsForImport.Trim();
 
             application.Vendor = await context.Vendors
                 .FirstAsync(v => v.Id == application.VendorId);
@@ -136,7 +112,7 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
-            if (!await CanManageAsync(application.VendorId))
+            if (!await CanAccessApplicationAsync(application.VendorId))
             {
                 return Forbid();
             }
@@ -162,7 +138,7 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
-            if (!await CanManageAsync(existingApplication.VendorId))
+            if (!await CanAccessApplicationAsync(existingApplication.VendorId))
             {
                 return Forbid();
             }
@@ -211,7 +187,7 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
-            if (!await CanManageAsync(application.VendorId))
+            if (!await CanAccessApplicationAsync(application.VendorId))
             {
                 return Forbid();
             }
@@ -232,7 +208,7 @@ namespace AppsChangeLog.Controllers
                 return NotFound();
             }
 
-            if (!await CanManageAsync(application.VendorId))
+            if (!await CanAccessApplicationAsync(application.VendorId))
             {
                 return Forbid();
             }
@@ -243,7 +219,7 @@ namespace AppsChangeLog.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> CanManageAsync(int vendorId)
+        private async Task<bool> CanAccessApplicationAsync(int vendorId)
         {
             if (User.IsInRole("Admin"))
             {

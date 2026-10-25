@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppsChangeLog.Models
 {
@@ -6,11 +6,13 @@ namespace AppsChangeLog.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
+        [Display(Name = "Vendor name")]
+        [Required(ErrorMessage = "Enter the vendor name.")]
+        [MaxLength(100, ErrorMessage = "The vendor name cannot exceed 100 characters.")]
         public string Name { get; set; } = string.Empty;
 
-        [EmailAddress]
+        [Display(Name = "Contact email")]
+        [EmailAddress(ErrorMessage = "Enter a valid contact email address.")]
         public string? ContactEmail { get; set; }
 
         public ICollection<Application> Applications { get; set; }
