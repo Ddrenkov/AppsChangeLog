@@ -1,104 +1,86 @@
 # AppsChangeLog
 
-AppsChangeLog is a web application for a company and its software vendors. It shows the current version of each application, what has changed, and how to import the new version into the company system.
+AppsChangeLog keeps the latest information about company apps in one place. Each app has a vendor, version number, release date, changes, and steps for importing it into the company system.
 
-Only the current version is saved. When someone updates an application, the old release information is replaced.
+There is no release history. When an app is updated, the old information is replaced.
 
-## Users and access
+## What users can do
 
-Users must log in before they can use the website.
+You must log in to use the website.
 
-An admin can:
+Admins can add, edit, and delete apps and vendors. They can also create vendor accounts and delete them.
 
-- See all applications.
-- Add, edit, and delete applications.
-- Add, edit, and delete vendors.
-- Create user accounts and choose their vendor.
-- Delete vendor user accounts.
+Vendor users can see and edit their own vendor’s apps. They cannot see apps from other vendors or add and delete apps.
 
-A vendor user can see and edit only the applications of their own vendor. They cannot see applications from other vendors. They cannot add or delete applications or change their vendor.
+You cannot delete a vendor while it has apps or users. Admin accounts are also protected from deletion.
 
-A vendor cannot be deleted if it has applications or users. Admin accounts cannot be deleted from the user management page.
-
-## Technologies
+## Tools used
 
 - C# and .NET 8
 - ASP.NET Core MVC
 - Entity Framework Core 8
 - SQL Server
 - ASP.NET Core Identity
-- Razor views and Bootstrap
+- Razor and Bootstrap
 
-## What you need
+## Run the app
 
-The default setup uses Windows. Install:
+You need Windows, .NET 8 SDK, and SQL Server Express LocalDB. LocalDB can be installed from Visual Studio Installer.
 
-- .NET 8 SDK
-- SQL Server Express LocalDB
-- Visual Studio 2022 with the ASP.NET and web development workload, if you want to use Visual Studio
+Open `AppsChangeLog.sln` in Visual Studio 2022. Visual Studio needs the **ASP.NET and web development** workload.
 
-LocalDB is available as a component in Visual Studio Installer.
-
-## How to run the project
-
-### 1. Open the project
-
-Download or clone this repository. Open `AppsChangeLog.sln` in Visual Studio.
-
-To restore the packages from a terminal, run this command from the folder with the solution file:
+From the solution folder, restore the packages:
 
 ```powershell
 dotnet restore AppsChangeLog.sln
 ```
 
-### 2. Create the database
+Next, open **Tools → NuGet Package Manager → Package Manager Console**. Choose **AppsChangeLog** as the default project.
 
-The default connection is in `AppsChangeLog/appsettings.json`. It uses `(localdb)\MSSQLLocalDB` and a database called `AppsChangeLog`.
-
-This connection uses your Windows account. You do not need a SQL username or password.
-
-In Visual Studio, open **Tools > NuGet Package Manager > Package Manager Console**. Choose **AppsChangeLog** as the default project. Run:
+Run these two commands separately:
 
 ```powershell
 $env:ASPNETCORE_ENVIRONMENT = "Development"
+```
+
+```powershell
 Update-Database
 ```
 
-The project already has a migration. This command creates the database and its tables. You do not need to create a new migration.
+This creates the database using the migration already in the project.
 
-### 3. Start the website
+Choose **http** next to the Run button and start the app. The address is [http://localhost:5291](http://localhost:5291).
 
-Choose the **http** profile next to the Run button in Visual Studio. Then start the project.
-
-You can also start it from a terminal in the solution folder:
+Or start it from a terminal:
 
 ```powershell
 dotnet run --project AppsChangeLog/AppsChangeLog.csproj --launch-profile http
 ```
 
-Open http://localhost:5291 in your browser. Keep the terminal open while using the website. Press Ctrl+C to stop it.
+Leave the terminal open while using the app. Press **Ctrl+C** to stop it.
 
-### 4. Log in
+## First login
 
-The app creates a test admin account when it starts in Development mode:
+The app creates this account in Development mode:
 
-- Username: `root`
-- Password: `root`
-- You can also log in with the email `root@example.com`.
+```text
+Username: root
+Password: root
+```
 
-This account is only for local testing. Do not use it on a public website. If the root account already exists, startup does not change its password.
+The email `root@example.com` also works for login. This is a local test account, so it should not be used on a public website. Starting the app again does not reset its password.
 
-A new database has no vendors or applications. Start by adding a vendor. Then add an application and select that vendor.
+The database is empty at first. Add a vendor, then add an app for that vendor.
 
-To test vendor access, create a user from **Manage users**. Select a vendor for the user. Their email is also their username.
+To make a vendor account, open **Manage users**, enter the user’s details, and choose a vendor. The user logs in with their email.
 
-New users need a password with at least 6 characters. It must have an uppercase letter, a lowercase letter, a number, and a special character.
+New passwords must have at least 6 characters, including uppercase and lowercase letters, a number, and a special character.
 
-## Using another SQL Server
+## Database settings
 
-You can keep the default LocalDB connection in the project and use another server on your computer.
+The default connection is in `AppsChangeLog/appsettings.json`. It uses `(localdb)\MSSQLLocalDB` and a database named `AppsChangeLog`. It uses your Windows account, so no SQL password is needed.
 
-Right-click the project in Visual Studio and choose **Manage User Secrets**. Add this setting and replace the server name:
+For another SQL Server, right-click the project and open **Manage User Secrets**. Add this with your server name:
 
 ```json
 {
@@ -108,15 +90,15 @@ Right-click the project in Visual Studio and choose **Manage User Secrets**. Add
 }
 ```
 
-The app uses this connection instead of LocalDB in Development mode. User Secrets are not saved in the GitHub repository.
+In Development mode, this setting replaces the default connection. User Secrets stay on your computer and are not uploaded to GitHub.
 
-Run `Update-Database` for the selected database before starting the app. Changing the connection does not move data from the old database.
+Run `Update-Database` for the database you choose. Data from the old database will not move automatically.
 
-The included launch profiles use Development mode. No API keys or other service accounts are needed for local use.
+No API keys or other service accounts are needed.
 
-## Common problems
+## If you get an error
 
-- If Visual Studio cannot start the https profile, try the http profile. Check the error in the terminal if the app still stops.
-- If a build says the application file is locked, stop the running app and build again.
-- If the app cannot connect to the database, check that LocalDB or your SQL Server is available. Also check the connection in User Secrets.
-- If tables are missing, run `Update-Database` for the database you are using.
+- If **https** does not start, try **http**.
+- If the app file is locked, stop the app before building again.
+- If SQL Server does not connect, check the server and your connection settings.
+- If tables are missing, run `Update-Database`.
