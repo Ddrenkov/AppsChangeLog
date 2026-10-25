@@ -1,42 +1,51 @@
 # AppsChangeLog
 
-AppsChangeLog keeps company applications and their current release information in one place. Each application belongs to a vendor and has a version number, release date, description of the changes, and instructions for importing the release into the company's system.
+AppsChangeLog is a web application for a company and its software vendors. It shows the current version of each application, what has changed, and how to import the new version into the company system.
 
-The application stores only the current release. Updating an application replaces its previous release information; it does not keep a release history.
+Only the current version is saved. When someone updates an application, the old release information is replaced.
 
-## What you can do
+## Users and access
 
-After logging in, users see a dashboard with the applications they can access. Opening an application shows what changed and the steps needed to import it.
+Users must log in before they can use the website.
 
-Administrators can:
+An admin can:
 
-- View all applications.
-- Add, edit, and delete applications and vendors.
-- Create vendor accounts and assign each account to a vendor.
-- Delete vendor accounts. Administrator accounts and the currently signed-in account are protected from deletion.
+- See all applications.
+- Add, edit, and delete applications.
+- Add, edit, and delete vendors.
+- Create user accounts and choose their vendor.
+- Delete vendor user accounts.
 
-Vendor users can:
+A vendor user can see and edit only the applications of their own vendor. They cannot see applications from other vendors. They cannot add or delete applications or change their vendor.
 
-- View applications belonging to their vendor.
-- Edit those applications, including the current version, release changes, and import instructions.
-
-Vendor users cannot access another vendor's applications or move an application to another vendor. Application creation and deletion remain administrator-only. A vendor cannot be deleted while it still has applications or user accounts.
+A vendor cannot be deleted if it has applications or users. Admin accounts cannot be deleted from the user management page.
 
 ## Technologies
 
 - C# and .NET 8
-- ASP.NET Core MVC and Razor views
-- Entity Framework Core 8 and SQL Server
-- ASP.NET Core Identity for accounts and roles
-- Bootstrap for the interface
+- ASP.NET Core MVC
+- Entity Framework Core 8
+- SQL Server
+- ASP.NET Core Identity
+- Razor views and Bootstrap
 
-## Run locally
+## What you need
 
-The default setup is for Windows with the .NET 8 SDK and SQL Server Express LocalDB installed. You can also use Visual Studio 2022 with the ASP.NET and web development workload and the SQL Server Express LocalDB component.
+The default setup uses Windows. Install:
 
-Download or clone the repository, then open a terminal in the folder containing `AppsChangeLog.sln`.
+- .NET 8 SDK
+- SQL Server Express LocalDB
+- Visual Studio 2022 with the ASP.NET and web development workload, if you want to use Visual Studio
 
-### 1. Restore dependencies
+LocalDB is available as a component in Visual Studio Installer.
+
+## How to run the project
+
+### 1. Open the project
+
+Download or clone this repository. Open `AppsChangeLog.sln` in Visual Studio.
+
+To restore the packages from a terminal, run this command from the folder with the solution file:
 
 ```powershell
 dotnet restore AppsChangeLog.sln
@@ -44,57 +53,52 @@ dotnet restore AppsChangeLog.sln
 
 ### 2. Create the database
 
-The default connection in `AppsChangeLog/appsettings.json` uses Windows Authentication and creates an `AppsChangeLog` database on `(localdb)\MSSQLLocalDB`. No SQL password is needed for this setup.
+The default connection is in `AppsChangeLog/appsettings.json`. It uses `(localdb)\MSSQLLocalDB` and a database called `AppsChangeLog`.
 
-If you use Visual Studio, open **Tools > NuGet Package Manager > Package Manager Console**, select **AppsChangeLog** as the default project, and run:
+This connection uses your Windows account. You do not need a SQL username or password.
+
+In Visual Studio, open **Tools > NuGet Package Manager > Package Manager Console**. Choose **AppsChangeLog** as the default project. Run:
 
 ```powershell
 $env:ASPNETCORE_ENVIRONMENT = "Development"
 Update-Database
 ```
 
-This applies the migrations already included in the repository. You do not need to create another migration for the initial setup.
+The project already has a migration. This command creates the database and its tables. You do not need to create a new migration.
 
-Alternatively, use the command line. If the EF Core command-line tool is not already installed, install it once:
+### 3. Start the website
 
-```powershell
-dotnet tool install --global dotnet-ef --version 8.0.21
-```
+Choose the **http** profile next to the Run button in Visual Studio. Then start the project.
 
-Then apply the migrations:
-
-```powershell
-$env:ASPNETCORE_ENVIRONMENT = "Development"
-dotnet ef database update --project AppsChangeLog/AppsChangeLog.csproj
-```
-
-### 3. Start the application
+You can also start it from a terminal in the solution folder:
 
 ```powershell
 dotnet run --project AppsChangeLog/AppsChangeLog.csproj --launch-profile http
 ```
 
-Open http://localhost:5291 in your browser. Keep the terminal running while using the application. Press Ctrl+C to stop it.
-
-In Visual Studio, you can instead open the solution, select the **http** launch profile, and start the project.
+Open http://localhost:5291 in your browser. Keep the terminal open while using the website. Press Ctrl+C to stop it.
 
 ### 4. Log in
 
-On startup in Development mode, the application creates the Admin and Vendor roles and a local administrator account if they do not already exist.
+The app creates a test admin account when it starts in Development mode:
 
-| Field | Value |
-| --- | --- |
-| Username | `root` |
-| Password | `root` |
-| Alternative login email | `root@example.com` |
+- Username: `root`
+- Password: `root`
+- You can also log in with the email `root@example.com`.
 
-These credentials are for local testing. Do not use this account for a publicly deployed application. Startup does not reset the password of an existing root account.
+This account is only for local testing. Do not use it on a public website. If the root account already exists, startup does not change its password.
 
-A fresh database has no vendors or applications. Log in as root, add a vendor, and then add an application for that vendor. To test vendor access, create a user account from Manage users and assign it to that vendor. New vendor accounts use their email address as their username and must meet Identity's normal password rules.
+A new database has no vendors or applications. Start by adding a vendor. Then add an application and select that vendor.
 
-## Use a different SQL Server
+To test vendor access, create a user from **Manage users**. Select a vendor for the user. Their email is also their username.
 
-To use another SQL Server instance locally, right-click the project in Visual Studio and choose **Manage User Secrets**. Add a connection string using your server name:
+New users need a password with at least 6 characters. It must have an uppercase letter, a lowercase letter, a number, and a special character.
+
+## Using another SQL Server
+
+You can keep the default LocalDB connection in the project and use another server on your computer.
+
+Right-click the project in Visual Studio and choose **Manage User Secrets**. Add this setting and replace the server name:
 
 ```json
 {
@@ -104,13 +108,15 @@ To use another SQL Server instance locally, right-click the project in Visual St
 }
 ```
 
-User Secrets override the default connection in Development mode and stay outside the repository. Apply migrations to the selected database before starting the application. Switching the connection does not transfer records from the old database.
+The app uses this connection instead of LocalDB in Development mode. User Secrets are not saved in the GitHub repository.
 
-The included launch profiles set `ASPNETCORE_ENVIRONMENT` to `Development`. No other environment variables, API keys, or external service accounts are required for the default local setup.
+Run `Update-Database` for the selected database before starting the app. Changing the connection does not move data from the old database.
 
-## Troubleshooting
+The included launch profiles use Development mode. No API keys or other service accounts are needed for local use.
 
-- **Unable to connect to web server https:** try the http launch profile and check the terminal output for the underlying error.
-- **The executable is locked during a build:** stop debugging and any running `dotnet run` process, then rebuild.
-- **Database connection fails:** check that LocalDB or your selected SQL Server instance is installed and available. Also check for a connection override in User Secrets.
-- **Tables are missing:** apply the included migrations to the same database the application uses.
+## Common problems
+
+- If Visual Studio cannot start the https profile, try the http profile. Check the error in the terminal if the app still stops.
+- If a build says the application file is locked, stop the running app and build again.
+- If the app cannot connect to the database, check that LocalDB or your SQL Server is available. Also check the connection in User Secrets.
+- If tables are missing, run `Update-Database` for the database you are using.
