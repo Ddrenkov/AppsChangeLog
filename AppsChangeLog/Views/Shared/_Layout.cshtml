@@ -1,4 +1,4 @@
-﻿@{
+@{
     bool loggedIn = User.Identity?.IsAuthenticated == true;
     string currentController =
         ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
@@ -60,13 +60,6 @@
                         </a>
                     }
 
-                    <div class="sidebar-heading">Overview</div>
-
-                    <a class="sidebar-link @(currentController == "Reports" ? "active" : "")"
-                       asp-controller="Reports"
-                       asp-action="Index">
-                        Reports
-                    </a>
                 </nav>
 
                 <div class="sidebar-account">

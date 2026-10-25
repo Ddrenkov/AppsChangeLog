@@ -1,0 +1,30 @@
+@model AppsChangeLog.Models.Application
+
+@{
+    ViewData["Title"] = "Edit application";
+}
+
+<div class="page-header">
+    <h1>Edit application</h1>
+</div>
+
+<div class="content-panel">
+    <form asp-action="Edit"
+          asp-route-id="@Model.Id"
+          method="post">
+
+        <partial name="_ApplicationForm" model="Model" />
+
+        <button type="submit" class="btn btn-primary">
+            Save changes
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Cancel
+        </a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

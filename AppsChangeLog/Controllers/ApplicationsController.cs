@@ -1,4 +1,4 @@
-﻿using AppsChangeLog.Data;
+using AppsChangeLog.Data;
 using AppsChangeLog.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -79,7 +79,7 @@ namespace AppsChangeLog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Vendor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(
             [Bind("Name,WhatWasChanged,CurrVersion,InstructionsForImport,ReleaseDate,VendorId")]
             AppEntity application)
@@ -119,7 +119,7 @@ namespace AppsChangeLog.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Vendor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var application = await context.Applications
@@ -143,7 +143,7 @@ namespace AppsChangeLog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Vendor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(
             int id,
             [Bind("Name,WhatWasChanged,CurrVersion,InstructionsForImport,ReleaseDate,VendorId")]
@@ -193,7 +193,7 @@ namespace AppsChangeLog.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Vendor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var application = await context.Applications
@@ -217,7 +217,7 @@ namespace AppsChangeLog.Controllers
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Vendor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var application = await context.Applications.FindAsync(id);

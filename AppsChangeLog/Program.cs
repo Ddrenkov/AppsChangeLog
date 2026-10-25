@@ -54,6 +54,18 @@ namespace AppsChangeLog
                     }
                 }
 
+                if (!await roleManager.RoleExistsAsync("Vendor"))
+                {
+                    var result = await roleManager.CreateAsync(
+                        new IdentityRole("Vendor"));
+
+                    if (!result.Succeeded)
+                    {
+                        throw new InvalidOperationException(
+                            string.Join("; ", result.Errors.Select(e => e.Description)));
+                    }
+                }
+
                 var root = await userManager.FindByNameAsync("root");
 
                 if (root == null)
